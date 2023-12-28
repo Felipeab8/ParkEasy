@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro</title>
+    <link rel="icon" type="image/x-icon" href="assets/icone park easy.ico" />
+    <link rel="stylesheet" href="css/cadastro.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function initMap() {
+            const input = document.getElementById("Endereco");
+            if (input instanceof HTMLInputElement) {
+                const autocomplete = new google.maps.places.Autocomplete(input);
+            }
+        }
+    </script>
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDguAb8NeKg3qGwXGGzSYPMquM9316WAfA&libraries=places&callback=initMap"></script>
+</head>
+
+<body>
+    <div class="header">
+        <a href="login.html"><- Voltar ao Login</a>
+    </div>
+    <div class="cadastro">
+        <form action="http://localhost:3000/cadastrar-usuario" method="post" class="sub-cadastro">
+            <div class="upper-cadastro">
+                <h2>Faça seu registro</h2>
+                <label for="Nome">Nome</label> <br>
+                <input type="text" id="Nome" name="NOME_CLIENTE" required placeholder="Insira seu nome"> <br>
+
+                <label for="Sexo">Sexo</label> <br>
+                <select id="Sexo" name="SEXO" required class="input-field">
+                    <option value="M">Masculino</option>
+                    <option value="F">Feminino</option>
+                </select> <br>                            
+                
+                <label for="CPF">CPF</label> <br>
+                <input type="text" id="CPF" name="CPF" required placeholder="Insira seu CPF (com dígito)"> <br>
+                
+                <label for="Email">Email</label> <br>
+                <input type="email" id="Email" name="EMAIL_CLIENTE" required placeholder="Insira seu endereço de email"> <br>
+                
+                <label for="Senha">Senha</label> <br>
+                <input type="password" id="Senha" name="SENHA" required placeholder="Escolha uma senha segura"> <br>
+
+                <label for="Endereco">Endereço</label> <br>
+                <input type="text" id="Endereco" name="ENDERECO_CLIENTE" placeholder="Insira seu endereço"> <br>
+            </div>
+            <div class="btn">
+                <button type="submit">Enviar</button> <br>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        initMap();
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('.sub-cadastro');
+
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const formData = new FormData(form);
+
+                fetch('http://localhost:3000/cadastrar-usuario', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showToast('Sucesso: ' + data.message, 'bg-success');
+                            window.location.href = '/login.html';
+                        } else {
+                            showToast('Erro: ' + data.message, 'bg-danger');
+                            form.reset();
+                        }
+                    })
+                    .catch(error => {
+                        showToast('Erro na solicitação: ' + error, 'bg-danger');
+                        form.reset();
+                    });
+            });
+
+            function showToast(message, bgColor) {
+                const toast = document.createElement('div');
+                toast.classList.add('toast', bgColor);
+                toast.style.position = 'fixed';
+                toast.style.top = '10px';
+                toast.style.right = '10px';
+                toast.setAttribute('role', 'alert');
+                toast.setAttribute('aria-live', 'assertive');
+                toast.setAttribute('aria-atomic', 'true');
+
+                const toastBody = document.createElement('div');
+                toastBody.classList.add('toast-body');
+                toastBody.innerText = message;
+
+                toast.appendChild(toastBody);
+                document.body.appendChild(toast);
+
+                $('.toast').toast({ 'autohide': false });
+                $('.toast').toast('show');
+            }
+        });
+    </script>
+</body>
+
+</html>

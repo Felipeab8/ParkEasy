@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operações de Empresa</title>
+    <link rel="icon" type="image/x-icon" href="assets/icone_park_easy.ico" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <style>
+        body {
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        button {
+            margin-right: 5px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        .btn-primary, .btn-success, .btn-info, .btn-danger {
+            --bs-btn-color: #fff;
+            --bs-btn-bg: #7464a1;
+            --bs-btn-border-color: #7464a1;
+            --bs-btn-hover-color: #fff;
+            --bs-btn-hover-bg: #635589;
+            --bs-btn-hover-border-color: #5d5081;
+            --bs-btn-focus-shadow-rgb: 137, 123, 175;
+            --bs-btn-active-color: #fff;
+            --bs-btn-active-bg: #5d5081;
+            --bs-btn-active-border-color: #574b79;
+            --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+            --bs-btn-disabled-color: #fff;
+            --bs-btn-disabled-bg: #7464a1;
+            --bs-btn-disabled-border-color: #7464a1;
+        }
+
+        .btn-primary:hover, .btn-success:hover, .btn-info:hover, .btn-danger:hover {
+            --bs-btn-bg: #635589;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Operações de Empresa</h2>
+
+    <h3>Lista de Empresas</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>CNPJ</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="company-table-body"></tbody>
+    </table>
+
+    <h3>Operações de Empresa</h3>
+    <form id="company-form">
+        <div class="form-group">
+            <label for="company-id">ID da Empresa:</label>
+            <input type="text" class="form-control" id="company-id" name="company-id" required>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="getCompanyById()">Buscar Empresa</button>
+        <div class="form-group">
+            <label for="company-name">Nome:</label>
+            <input type="text" class="form-control" id="company-name" name="company-name" required>
+        </div>
+        <div class="form-group">
+            <label for="company-cnpj">CNPJ:</label>
+            <input type="text" class="form-control" id="company-cnpj" name="company-cnpj" required>
+        </div>
+        <button type="submit" class="btn btn-success">Atualizar Empresa</button>
+        <button type="button" class="btn btn-danger" onclick="deleteCompany()">Excluir Empresa</button>
+    </form>
+
+    <h3>Excluir Empresa</h3>
+    <form id="delete-company-form">
+        <div class="form-group">
+            <label for="delete-company-id">ID da Empresa:</label>
+            <input type="text" class="form-control" id="delete-company-id" name="delete-company-id" required>
+        </div>
+        <button type="button" class="btn btn-danger" onclick="deleteCompany()">Excluir Empresa</button>
+        <button type="button" class="btn btn-info" onclick="goBack()">Voltar</button>
+        <button type="button" class="btn btn-primary" onclick="goToIndex()">Ir para o Início</button>
+    </form>
+
+    <script>
+        function getCompanyById(id) {
+            const updateIdInput = document.getElementById('company-id');
+            const companyId = id || updateIdInput.value;
+
+            fetch(`http://localhost:3000/empresas/${companyId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Erro na solicitação: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.empresa) {
+                        const empresa = data.empresa;
+                        document.getElementById('company-id').value = empresa.ID_EMPRESA_ESTACIONAMENTO || '';
+                        document.getElementById('company-name').value = empresa.NOME_EMPRESA || '';
+                        document.getElementById('company-cnpj').value = empresa.CNPJ || '';
+                    } else {
+                        console.error('Empresa não encontrada na resposta do servidor.');
+                    }
+                })
+                .catch(error => console.error('Erro ao obter detalhes da empresa:', error));
+        }
+
+        function updateCompany() {
+            const companyIdInput = document.getElementById('company-id');
+            const companyId = companyIdInput.value;
+            const updateName = document.getElementById('company-name').value;
+            const updateCnpj = document.getElementById('company-cnpj').value;
+
+            // Validar se os campos obrigatórios estão preenchidos
+            if (!companyId || !updateName || !updateCnpj) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+
+            fetch(`http://localhost:3000/empresas/${companyId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    NOME_EMPRESA: updateName,
+                    CNPJ: updateCnpj,
+                }),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Erro na solicitação: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        location.reload();
+                    } else {
+                        alert('Erro ao atualizar empresa. Por favor, tente novamente.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao atualizar empresa:', error);
+                    alert('Erro ao atualizar empresa. Por favor, tente novamente.');
+                });
+        }
+
+        function loadCompanyTable() {
+            const companyTableBody = document.getElementById('company-table-body');
+
+            fetch('http://localhost:3000/empresas')
+                .then(response => response.json())
+                .then(data => {
+                    data.empresas.forEach(empresa => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${empresa.ID_EMPRESA_ESTACIONAMENTO}</td>
+                            <td>${empresa.NOME_EMPRESA}</td>
+                            <td>${empresa.CNPJ}</td>
+                            <td>
+                                <button class="btn btn-info" onclick="getCompanyById(${empresa.ID_EMPRESA_ESTACIONAMENTO})">Editar</button>
+                                <button class="btn btn-danger" onclick="deleteCompany(${empresa.ID_EMPRESA_ESTACIONAMENTO})">Excluir</button>
+                            </td>`;
+                        companyTableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Erro ao obter empresas:', error));
+        }
+
+        function deleteCompany(id) {
+            const deleteIdInput = document.getElementById('delete-company-id');
+            const companyId = id || deleteIdInput.value;
+
+            fetch(`http://localhost:3000/empresas/${companyId}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    location.reload();
+                })
+                .catch(error => console.error('Erro ao excluir empresa:', error));
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function goToIndex() {
+            window.location.href = 'index.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            loadCompanyTable();
+
+            document.getElementById('company-form').addEventListener('submit', function (event) {
+                event.preventDefault();
+                updateCompany();
+            });
+        });
+    </script>
+</body>
+
+</html>

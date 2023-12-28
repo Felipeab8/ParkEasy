@@ -1,0 +1,31 @@
+{
+  "name": "projeto-carioca",
+  "description": "",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start:cadastro": "node ./js/apicadastro.js",
+    "dev:cadastro": "nodemon ./js/apicadastro.js",
+    "start:login": "node ./js/apilogin.js",
+    "dev:login": "nodemon ./js/apilogin.js",
+    "start:both": "concurrently \"npm run start:cadastro\" \"npm run start:login\"",
+    "dev:both": "concurrently \"npm run dev:cadastro\" \"npm run dev:login\""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "bootstrap": "^5.3.2",
+    "concurrently": "^8.2.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "mysql": "^2.18.1",
+    "node-fetch": "^3.3.2",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

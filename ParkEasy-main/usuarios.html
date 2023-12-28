@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operações de Usuário</title>
+    <link rel="icon" type="image/x-icon" href="assets/icone park easy.ico" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <style>
+        body {
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        button {
+            margin-right: 5px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        .btn-primary, .btn-success, .btn-info, .btn-danger {
+            --bs-btn-color: #fff;
+            --bs-btn-bg: #7464a1;
+            --bs-btn-border-color: #7464a1;
+            --bs-btn-hover-color: #fff;
+            --bs-btn-hover-bg: #635589;
+            --bs-btn-hover-border-color: #5d5081;
+            --bs-btn-focus-shadow-rgb: 137, 123, 175;
+            --bs-btn-active-color: #fff;
+            --bs-btn-active-bg: #5d5081;
+            --bs-btn-active-border-color: #574b79;
+            --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+            --bs-btn-disabled-color: #fff;
+            --bs-btn-disabled-bg: #7464a1;
+            --bs-btn-disabled-border-color: #7464a1;
+        }
+
+        .btn-primary:hover, .btn-success:hover, .btn-info:hover, .btn-danger:hover {
+            --bs-btn-bg: #635589;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Operações de Usuário</h2>
+
+    <h3>Lista de Usuários</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="user-table-body"></tbody>
+    </table>
+
+    <h3>Operações de Usuário</h3>
+    <form id="user-form">
+        <div class="form-group">
+            <label for="user-id">ID do Usuário:</label>
+            <input type="text" class="form-control" id="user-id" name="user-id" required>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="getUserById()">Buscar Usuário</button>
+        <div class="form-group">
+            <label for="user-nome">Nome:</label>
+            <input type="text" class="form-control" id="user-nome" name="user-nome" required>
+        </div>
+        <div class="form-group">
+            <label for="user-email">Email:</label>
+            <input type="email" class="form-control" id="user-email" name="user-email" required>
+        </div>
+        <button type="submit" class="btn btn-success">Atualizar Usuário</button>
+        <button type="button" class="btn btn-danger" onclick="deleteUser()">Excluir Usuário</button>
+    </form>
+
+    <h3>Excluir Usuário</h3>
+    <form id="delete-form">
+        <div class="form-group">
+            <label for="delete-id">ID do Usuário:</label>
+            <input type="text" class="form-control" id="delete-id" name="delete-id" required>
+        </div>
+        <button type="button" class="btn btn-danger" onclick="deleteUser()">Excluir Usuário</button>
+        <button type="button" class="btn btn-info" onclick="goBack()">Voltar</button>
+        <button type="button" class="btn btn-primary" onclick="goToIndex()">Ir para o Início</button>
+    </form>
+
+    <script>
+
+function getUserById(id) {
+    const updateIdInput = document.getElementById('user-id');
+    const userId = id || updateIdInput.value;
+
+    fetch(`http://localhost:3000/usuarios/${userId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erro na solicitação: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.usuario) {
+                const usuario = data.usuario;
+                document.getElementById('user-id').value = usuario.ID_CLIENTE || '';
+                document.getElementById('user-nome').value = usuario.NOME_CLIENTE || '';
+                document.getElementById('user-email').value = usuario.EMAIL_CLIENTE || '';
+            } else {
+                console.error('Usuário não encontrado na resposta do servidor.');
+            }
+        })
+        .catch(error => console.error('Erro ao obter detalhes do usuário:', error));
+}
+
+        function updateUser() {
+    const userIdInput = document.getElementById('user-id');
+    const userId = userIdInput.value;
+    const updateNome = document.getElementById('user-nome').value;
+    const updateEmail = document.getElementById('user-email').value;
+
+    // Validar se os campos obrigatórios estão preenchidos
+    if (!userId || !updateNome || !updateEmail) {
+        alert('Por favor, preencha todos os campos obrigatórios.');
+        return;
+    }
+
+    fetch(`http://localhost:3000/usuarios/${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            NOME_CLIENTE: updateNome,
+            EMAIL_CLIENTE: updateEmail,
+        }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Erro na solicitação: ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            // Tratar erros específicos, e.g., entrada duplicada
+            if (data.error && data.error.code === 'ER_DUP_ENTRY') {
+                alert('Erro: O email fornecido já está em uso.');
+            } else {
+                alert('Erro ao atualizar usuário. Por favor, tente novamente.');
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Erro ao atualizar usuário:', error);
+        alert('Erro ao atualizar usuário. Por favor, tente novamente.');
+    });
+}
+
+        function loadUserTable() {
+            const userTableBody = document.getElementById('user-table-body');
+
+            fetch('http://localhost:3000/usuarios')
+                .then(response => response.json())
+                .then(data => {
+                    data.usuarios.forEach(usuario => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${usuario.ID_CLIENTE}</td>
+                            <td>${usuario.NOME_CLIENTE}</td>
+                            <td>${usuario.EMAIL_CLIENTE}</td>
+                            <td>
+                                <button class="btn btn-info" onclick="getUserById(${usuario.ID_CLIENTE})">Editar</button>
+                                <button class="btn btn-danger" onclick="deleteUser(${usuario.ID_CLIENTE})">Excluir</button>
+                            </td>`;
+                        userTableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Erro ao obter usuários:', error));
+        }
+
+        function deleteUser(id) {
+            const deleteIdInput = document.getElementById('delete-id');
+            const userId = id || deleteIdInput.value;
+
+            fetch(`http://localhost:3000/usuarios/${userId}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    location.reload();
+                })
+                .catch(error => console.error('Erro ao excluir usuário:', error));
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            loadUserTable();
+
+            document.getElementById('user-form').addEventListener('submit', function (event) {
+                event.preventDefault();
+                updateUser();
+            });
+
+        document.addEventListener('DOMContentLoaded', function () {
+    const updateIdInput = document.getElementById('update-id');
+    const userId = updateIdInput.value;
+    const updateNome = document.getElementById('update-nome').value;
+    const updateEmail = document.getElementById('update-email').value;
+
+    fetch(`http://localhost:3000/usuarios/${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            NOME_CLIENTE: updateNome,
+            EMAIL_CLIENTE: updateEmail,
+        }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Erro na solicitação: ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            // Handle specific errors, e.g., duplicate entry
+            if (data.error && data.error.code === 'ER_DUP_ENTRY') {
+                alert('Erro: O email fornecido já está em uso.');
+            } else {
+                alert('Erro ao atualizar usuário.');
+            }
+        }
+    })
+    .catch(error => console.error('Erro ao atualizar usuário:', error));
+},
+
+    )
+        }
+    )
+
+    function goBack() {
+            window.history.back();
+        }
+
+        function goToIndex() {
+            window.location.href = 'index.html';
+        }
+
+    </script>
+</body>
+
+</html>

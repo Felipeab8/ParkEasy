@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Empresa</title>
+    <link rel="icon" type="image/x-icon" href="assets/icone_park_easy.ico" />
+    <link rel="stylesheet" href="css/cadastro.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</head>
+
+<body>
+    <h2>Cadastro de Empresa</h2>
+
+    <form id="cadastro-empresa-form">
+        <div class="form-group">
+            <label for="nome">Nome:</label>
+            <input type="text" class="form-control" id="nome-empresa" name="nome-empresa" required>
+        </div>
+        <div class="form-group">
+            <label for="cnpj">CNPJ:</label>
+            <input type="text" class="form-control" id="cnpj-empresa" name="cnpj-empresa" required>
+        </div>
+        <button type="submit" class="btn btn-success">Cadastrar Empresa</button>
+        <button type="button" class="btn btn-info" onclick="goBack()">Voltar</button>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const cadastroEmpresaForm = document.getElementById('cadastro-empresa-form');
+
+            function cadastrarEmpresa() {
+                const nomeEmpresa = document.getElementById('nome-empresa').value;
+                const cnpjEmpresa = document.getElementById('cnpj-empresa').value;
+
+                if (!nomeEmpresa || !cnpjEmpresa) {
+                    alert('Por favor, preencha todos os campos obrigatórios.');
+                    return;
+                }
+
+                fetch('http://localhost:3000/cadastrar-empresa', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        NOME_EMPRESA: nomeEmpresa,
+                        CNPJ: cnpjEmpresa,
+                    }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Erro na solicitação: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                    } else {
+
+                        alert('Erro ao cadastrar empresa. Por favor, tente novamente.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao cadastrar empresa:', error);
+                    alert('Erro ao cadastrar empresa. Por favor, tente novamente.');
+                });
+            }
+
+            cadastroEmpresaForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                cadastrarEmpresa();
+            });
+        });
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+
+</html>

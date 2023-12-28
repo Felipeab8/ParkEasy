@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Veículo</title>
+    <link rel="icon" type="image/x-icon" href="assets/icone_park_easy.ico" />
+    <link rel="stylesheet" href="css/cadastro.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</head>
+
+<body>
+    <h2>Cadastro de Veículo</h2>
+
+    <form id="cadastro-veiculo-form">
+        <div class="form-group">
+            <label for="tipo">Tipo:</label>
+            <select class="form-control" id="tipo-veiculo" name="tipo-veiculo" required>
+                <option value="M">Moto</option>
+                <option value="C">Carro</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="modelo">Modelo:</label>
+            <input type="text" class="form-control" id="modelo-veiculo" name="modelo-veiculo" required>
+        </div>
+        <div class="form-group">
+            <label for="placa">Placa:</label>
+            <input type="text" class="form-control" id="placa-veiculo" name="placa-veiculo" required>
+        </div>
+        <button type="submit" class="btn btn-success">Cadastrar Veículo</button>
+        <button type="button" class="btn btn-info" onclick="goBack()">Voltar</button>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const cadastroVeiculoForm = document.getElementById('cadastro-veiculo-form');
+
+            function cadastrarVeiculo() {
+                const tipoVeiculo = document.getElementById('tipo-veiculo').value;
+                const modeloVeiculo = document.getElementById('modelo-veiculo').value;
+                const placaVeiculo = document.getElementById('placa-veiculo').value;
+
+                // Validar se os campos obrigatórios estão preenchidos
+                if (!tipoVeiculo || !modeloVeiculo || !placaVeiculo) {
+                    alert('Por favor, preencha todos os campos obrigatórios.');
+                    return;
+                }
+
+                fetch('http://localhost:3000/cadastrar-veiculo', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        TIPO_VEICULO: tipoVeiculo,
+                        MODELO_VEICULO: modeloVeiculo,
+                        PLACA_VEICULO: placaVeiculo,
+                    }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Erro na solicitação: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        location.reload();
+                    } else {
+                        alert('Erro ao cadastrar veículo. Por favor, tente novamente.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao cadastrar veículo:', error);
+                    alert('Erro ao cadastrar veículo. Por favor, tente novamente.');
+                });
+            }
+
+            cadastroVeiculoForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                cadastrarVeiculo();
+            });
+        });
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+
+</html>

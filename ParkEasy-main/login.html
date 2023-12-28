@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="icon" type="image/x-icon" href="assets/icone park easy.ico" />
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/styles.css">
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light sticky-top fixed-top" id="mainNav">
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" href="./index.html"><img src="assets\img/icone park easy.png" alt="logo"></a>
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    Menu
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link" href="./estacionamentos.html">Estacionamentos</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./login.html">Fazer login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./sobre.html">Sobre nós</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./contato.html">Nos contate</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        </nav>
+    <header>
+    <div class="login">
+        <form action="http://localhost:3000/login-usuario" method="post" class="sub-login">
+            <div class="upper-login">
+                <h2>Faça o Login</h2>
+                <label for="Usuario">Nome de Usuário</label> <br>
+                <input type="text" id="Usuario" name="Usuario" required placeholder="Insira seu nome de usuário"> <br>
+                <label for="Senha">Senha</label> <br>
+                <input type="password" id="Senha" name="Senha" required placeholder="Insira sua senha"> <br>
+            </div>
+            <div class="btn">
+                <button type="submit">Login</button> <br>
+            </div>
+            <div class="no-account">Ainda não tem uma conta? <a href="./cadastro.html" class="signup">Inscreva-se</a>
+            </div>
+        </header>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('.sub-login');
+
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const formData = new FormData(form);
+
+                fetch('http://localhost:3001/autenticar-usuario', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showToast('Sucesso: ' + data.message, 'bg-success');
+                            window.location.href = '/login.html';
+                        } else {
+                            showToast('Erro: ' + data.message, 'bg-danger');
+                            form.reset();
+                        }
+                    })
+                    .catch(error => {
+                        showToast('Erro na solicitação: ' + error, 'bg-danger');
+                        form.reset();
+                    });
+            });
+
+            function showToast(message, bgColor) {
+                const toast = document.createElement('div');
+                toast.classList.add('toast', bgColor);
+                toast.style.position = 'fixed';
+                toast.style.top = '10px';
+                toast.style.right = '10px';
+                toast.setAttribute('role', 'alert');
+                toast.setAttribute('aria-live', 'assertive');
+                toast.setAttribute('aria-atomic', 'true');
+
+                const toastBody = document.createElement('div');
+                toastBody.classList.add('toast-body');
+                toastBody.innerText = message;
+
+                toast.appendChild(toastBody);
+                document.body.appendChild(toast);
+
+                $('.toast').toast({ 'autohide': false });
+                $('.toast').toast('show');
+            }
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operações de Veículo</title>
+    <link rel="icon" type="image/x-icon" href="assets/icone park easy.ico" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <style>
+        body {
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        button {
+            margin-right: 5px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        .btn-primary, .btn-success, .btn-info, .btn-danger {
+            --bs-btn-color: #fff;
+            --bs-btn-bg: #7464a1;
+            --bs-btn-border-color: #7464a1;
+            --bs-btn-hover-color: #fff;
+            --bs-btn-hover-bg: #635589;
+            --bs-btn-hover-border-color: #5d5081;
+            --bs-btn-focus-shadow-rgb: 137, 123, 175;
+            --bs-btn-active-color: #fff;
+            --bs-btn-active-bg: #5d5081;
+            --bs-btn-active-border-color: #574b79;
+            --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+            --bs-btn-disabled-color: #fff;
+            --bs-btn-disabled-bg: #7464a1;
+            --bs-btn-disabled-border-color: #7464a1;
+        }
+
+        .btn-primary:hover, .btn-success:hover, .btn-info:hover, .btn-danger:hover {
+            --bs-btn-bg: #635589;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Operações de Veículo</h2>
+
+    <h3>Lista de Veículos</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tipo</th>
+                <th>Modelo</th>
+                <th>Placa</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="vehicle-table-body"></tbody>
+    </table>
+
+    <h3>Operações de Veículo</h3>
+    <form id="vehicle-form">
+        <div class="form-group">
+            <label for="vehicle-id">ID do Veículo:</label>
+            <input type="text" class="form-control" id="vehicle-id" name="vehicle-id" required>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="getVehicleById()">Buscar Veículo</button>
+        <div class="form-group">
+            <label for="vehicle-tipo">Tipo:</label>
+            <select class="form-control" id="vehicle-tipo" name="tipo_veiculo" required>
+                <option value="M">Moto</option>
+                <option value="C">Carro</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="vehicle-modelo">Modelo:</label>
+            <input type="text" class="form-control" id="vehicle-modelo" name="vehicle-modelo" required>
+        </div>
+        <div class="form-group">
+            <label for="vehicle-placa">Placa:</label>
+            <input type="text" class="form-control" id="vehicle-placa" name="vehicle-placa" required>
+        </div>
+        <button type="submit" class="btn btn-success">Atualizar Veículo</button>
+        <button type="button" class="btn btn-danger" onclick="deleteVehicle()">Excluir Veículo</button>
+    </form>
+
+    <h3>Excluir Veículo</h3>
+    <form id="delete-vehicle-form">
+        <div class="form-group">
+            <label for="delete-vehicle-id">ID do Veículo:</label>
+            <input type="text" class="form-control" id="delete-vehicle-id" name="delete-vehicle-id" required>
+        </div>
+        <button type="button" class="btn btn-danger" onclick="deleteVehicle()">Excluir Veículo</button>
+        <button type="button" class="btn btn-info" onclick="goBack()">Voltar</button>
+        <button type="button" class="btn btn-primary" onclick="goToIndex()">Ir para o Início</button>
+    </form>
+
+    <script>
+        function getVehicleById(id) {
+            const updateIdInput = document.getElementById('vehicle-id');
+            const vehicleId = id || updateIdInput.value;
+
+            fetch(`http://localhost:3000/veiculos/${vehicleId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Erro na solicitação: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.veiculo) {
+                        const veiculo = data.veiculo;
+                        document.getElementById('vehicle-id').value = veiculo.ID_VEICULO_CADASTRADO || '';
+                        document.getElementById('vehicle-tipo').value = veiculo.TIPO_VEICULO || '';
+                        document.getElementById('vehicle-modelo').value = veiculo.MODELO_VEICULO || '';
+                        document.getElementById('vehicle-placa').value = veiculo.PLACA_VEICULO || '';
+                    } else {
+                        console.error('Veículo não encontrado na resposta do servidor.');
+                    }
+                })
+                .catch(error => console.error('Erro ao obter detalhes do veículo:', error));
+        }
+
+        function updateVehicle() {
+            const vehicleIdInput = document.getElementById('vehicle-id');
+            const vehicleId = vehicleIdInput.value;
+            const updateTipo = document.getElementById('vehicle-tipo').value;
+            const updateModelo = document.getElementById('vehicle-modelo').value;
+            const updatePlaca = document.getElementById('vehicle-placa').value;
+
+            // Validar se os campos obrigatórios estão preenchidos
+            if (!vehicleId || !updateTipo || !updateModelo || !updatePlaca) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+
+            fetch(`http://localhost:3000/veiculos/${vehicleId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    TIPO_VEICULO: updateTipo,
+                    MODELO_VEICULO: updateModelo,
+                    PLACA_VEICULO: updatePlaca,
+                }),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Erro na solicitação: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        location.reload();
+                    } else {
+                        alert('Erro ao atualizar veículo. Por favor, tente novamente.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao atualizar veículo:', error);
+                    alert('Erro ao atualizar veículo. Por favor, tente novamente.');
+                });
+        }
+
+        function loadVehicleTable() {
+            const vehicleTableBody = document.getElementById('vehicle-table-body');
+
+            fetch('http://localhost:3000/veiculos')
+                .then(response => response.json())
+                .then(data => {
+                    data.veiculos.forEach(veiculo => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${veiculo.ID_VEICULO_CADASTRADO}</td>
+                            <td>${veiculo.TIPO_VEICULO}</td>
+                            <td>${veiculo.MODELO_VEICULO}</td>
+                            <td>${veiculo.PLACA_VEICULO}</td>
+                            <td>
+                                <button class="btn btn-info" onclick="getVehicleById(${veiculo.ID_VEICULO_CADASTRADO})">Editar</button>
+                                <button class="btn btn-danger" onclick="deleteVehicle(${veiculo.ID_VEICULO_CADASTRADO})">Excluir</button>
+                            </td>`;
+                        vehicleTableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Erro ao obter veículos:', error));
+        }
+
+        function deleteVehicle(id) {
+            const deleteIdInput = document.getElementById('delete-vehicle-id');
+            const vehicleId = id || deleteIdInput.value;
+
+            fetch(`http://localhost:3000/veiculos/${vehicleId}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    location.reload();
+                })
+                .catch(error => console.error('Erro ao excluir veículo:', error));
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function goToIndex() {
+            window.location.href = 'index.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            loadVehicleTable();
+
+            document.getElementById('vehicle-form').addEventListener('submit', function (event) {
+                event.preventDefault();
+                updateVehicle();
+            });
+        });
+    </script>
+</body>
+
+</html>

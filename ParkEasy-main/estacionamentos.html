@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link href="css/styles.css" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estacionamentos</title>
+    <link rel="icon" type="image/x-icon" href="assets/icone park easy.ico" />
+    <style>
+        body {
+            background-image: url('assets/img/fundo estacionamentos.png');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: 0px 32.5%;
+        }
+
+        .scroll-to-map-button {
+            display: inline-block;
+            background-color: rgb(137, 177, 153);
+            color: rgb(255, 250, 250);
+            padding: 20px 40px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin-top: 50px;
+        }
+
+        .scroll-to-map-button:hover {
+            background-color: #465b72;
+        }
+
+    </style>
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top fixed-top" id="mainNav">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand" href="./index.html"><img src="assets\img/icone park easy.png" alt="logo"></a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+                aria-label="Toggle navigation">
+                Menu
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="./estacionamentos.html">Estacionamentos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./login.html">Fazer login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./sobre.html">Sobre nós</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./contato.html">Nos contate</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <header class="project">
+        <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+            <div class="d-flex justify-content-center">
+                <div class="text-center">
+                    <h1 class="mx-auto my-0 text-uppercase">Ache os estacionamentos mais perto de sua casa com um simples clique</h1>
+                    <a href="#map-section" class="scroll-to-map-button">Ir para o Mapa</a>
+                </div>
+            </div>
+        </div>
+    </header>
+</head>
+
+<body>
+    <section id="map-section">
+        <div id="map" style="width: 100%; height: 900px;"></div>
+    </section>
+
+    <script>
+        function initMap() {
+            const mapOptions = {
+                center: { lat: -23.609325042507287, lng: -46.57379458759083 }, // Coordenadas iniciais do mapa
+                zoom: 18, // Nível de zoom inicial
+            };
+            const map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+            // Adicione código aqui para configurar a funcionalidade de seleção de lugares próximos.
+            // Você pode adicionar marcadores, círculos, etc., para representar lugares próximos e interagir com eles.
+
+            // Exemplo de adição de um marcador:
+            const marker = new google.maps.Marker({
+                position: { lat: -34.397, lng: 150.644 }, // Coordenadas do marcador
+                map: map, // Mapa onde o marcador deve ser exibido
+                title: "Lugar de interesse", // Título do marcador
+            });
+
+            // Exemplo de pesquisa de lugares próximos:
+            const service = new google.maps.places.PlacesService(map);
+            service.nearbySearch(
+                {
+                    location: mapOptions.center,
+                    radius: 1000, // Raio de busca em metros
+                    type: ["restaurant", "store"], // Tipos de lugares a serem pesquisados
+                },
+                (results, status) => {
+                    if (status === google.maps.places.PlacesServiceStatus.OK) {
+                        // Processar os resultados da pesquisa aqui
+                    }
+                }
+            );
+        }
+    </script>
+
+    <script>
+        window.addEventListener('scroll', function () {
+            var nav = document.getElementById('mainNav');
+            if (window.scrollY > 100) {
+                nav.classList.add('navbar-shrink');
+            } else {
+                nav.classList.remove('navbar-shrink');
+            }
+        });
+    </script>
+
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA6_lSOrtqqIpsfLB26JcKpAX6-37y8QTo&libraries=places&callback=initMap"></script>
+</body>
+
+</html>

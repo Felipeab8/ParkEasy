@@ -1,0 +1,275 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.container {
+    display: flex;
+    justify-content: space-around;
+}
+
+
+.social-links:hover {
+    opacity: 0.8;
+}
+
+.sm-icon {
+    padding: 0 1rem;
+    margin: 0;
+    color: white;
+}
+
+.sm-icon:hover{
+    opacity: 0.8;
+}
+
+nav {
+    font-size: 20px;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 32px;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background-image: url(/assets/img/fundo\ registro.png);
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.form {
+    display: flex;
+    justify-content: center;
+    padding-top: 3rem;
+    margin-bottom: 0;
+}
+
+.sub-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30vw;
+    height: 70vh;
+    border-radius: 12px;
+    box-shadow: rgba(50, 50, 93, 0,25) 0px 13px 27px -5px,
+     rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+     background-color: white;
+}
+
+h2 {
+    margin: 1.5rem 0 2rem 0;
+    text-align: center;
+}
+
+label {
+    padding-left: 16px;
+    opacity: 0.75;
+}
+
+input {
+    display: flex;
+    border-radius: 50px;
+    border-style: none;
+    outline: none;
+    margin-top: 8px;
+    padding: 12px 24px;
+    width: 250px;
+    background-color: #EAEEED;
+}
+
+input:focus {
+    opacity: 0.7;
+}
+
+button {
+    padding: 10px 48px;
+    border-radius: 50px;
+    color: white;
+    margin-top: 0rem;
+    margin-bottom: 0rem;
+    cursor: pointer;
+    outline: none;
+    border-width: 0;
+    background-color: #1A1B27;
+    font-weight: 600;
+    width: 100%;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+.bottom-form {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+}
+
+.signup {
+    padding-left: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    color: #21D4FD;
+}
+
+.signup:hover {
+    opacity: 0.8;
+}
+
+.cadastro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    width: 100%;
+    max-width: 100%;
+}
+
+.upper-cadastro {
+    padding-top: 0;
+
+}
+
+.sub-cadastro {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30vw;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+      rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+    background-color: white;
+}
+
+h2 {
+    margin: 1.5rem 0 2rem 0;
+    text-align: center;
+}
+
+label {
+    padding-left: 16px;
+    opacity: 0.75;
+}
+
+input {
+    display: flex;
+    border-radius: 50px;
+    border-style: none;
+    outline: none;
+    margin-top: 8px;
+    padding: 12px 24px;
+    width: 250px;
+    background-color: #EAEEED;
+}
+
+input:focus {
+    opacity: 0.7;
+}
+
+button {
+    padding: 12px 48px;
+    border-radius: 50px;
+    color: white;
+    margin-top: 20px;
+    margin-bottom: 0rem;
+    cursor: pointer;
+    outline: none;
+    border-width: 0;
+    background-color: #1A1B27;
+    font-weight: 600;
+    width: 100%;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+.bottom-cadastro {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+}
+
+.signup {
+    padding-left: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    color: #21D4FD;
+}
+
+.signup:hover {
+    opacity: 0.8;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url('/assets/img/fundo\ registro.png');
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+} 
+
+.header {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+}
+
+.header a {
+    padding: 10px 20px; 
+    background-color: #2a3d48; 
+    color: #fff; 
+    border: none;
+    border-radius: 5px; 
+    font-weight: bold;
+    text-decoration: none;
+    font-family: 'Nunito', sans-serif;
+    font-size: 20px;
+    transition: background-color 0.3s;
+    display: inline-block; 
+}
+
+.header a:hover {
+    background-color: #1e87d0;
+}
+
+.logo-and-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 20px;
+    height: 100vh;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.input-field {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
